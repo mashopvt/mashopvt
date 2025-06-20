@@ -1,0 +1,65 @@
+<odoo>
+    <data>
+        <record id="mjt_view_account_payment_form_inherit" model="ir.ui.view">
+            <field name="name">mjt.account.payment.form.inherit</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='amount']" position="replace">
+                    <field name="amount" invisible="1"/>
+                    <field name="amount" readonly="1"/>
+                </xpath>
+                <xpath expr="//label[@for='amount']" position="before">
+                    <field name="sales_tax_ids" invisible="1" widget="many2many_tags"
+                           options="{'no_create': True, 'no_create_edit':True}"/>
+                    <field name="amount_exclusive_sales_tax" readonly="state != 'draft'"/>
+                    <field name="sale_tax_ids" readonly="state != 'draft'" options="{'no_create': True, 'no_create_edit':True}" widget="many2many_tags" invisible="payment_type == 'inbound'" domain="[('type_tax_use', '=', 'purchase'), ('sales_withholding_tax','=',False),('withholding_tax','=',False)]"/>
+                    <field name="sale_tax_ids" readonly="state != 'draft'" options="{'no_create': True, 'no_create_edit':True}" widget="many2many_tags" invisible="payment_type == 'outbound'" domain="[('type_tax_use', '=', 'sale'), ('sales_withholding_tax','=',False),('withholding_tax','=',False)]"/>
+                    <field name="sales_tax_amount" />
+                    <field name="amount_inclusive_sales_tax" invisible="1"/>
+                    <field name="amount_inclusive_sales_tax" readonly="1"/>
+                    <field name="retention_money_payable" invisible="1" readonly="state != 'draft'"/>
+                    <field name="advance" invisible="1" readonly="state != 'draft'"/>
+                    <field name="sales_tax_amount_withholding"/>
+                    <field name="amount_withholding" invisible="1"/>
+                    <field name="amount_withholding" readonly="1"/>
+                    <field name="is_multi_deduction" invisible="1"/>
+                    <field name="tax_percent" invisible="1"/>
+                </xpath>
+                <xpath expr="//field[@name='payment_method_line_id']" position="after">
+                    <field name="Withholding_sales_tax_ids" readonly="state != 'draft'"
+                           widget="many2many_tags" options="{'no_create': True, 'no_create_edit':True}"/>
+                    <field name="withholding_tax_id" widget="many2many_tags" readonly="state != 'draft'"
+                           options="{'no_create': True, 'no_create_edit':True}"/>
+                    <field name="withholding_tax_ids" invisible="1" widget="many2many_tags" readonly="state != 'draft'"
+                           options="{'no_create': True, 'no_create_edit':True}"/>
+                    <field name="lc_note" readonly="state != 'draft'"/>
+                </xpath>
+            </field>
+        </record>
+        <!-- Account Tax Form View -->
+        <record id="mjt_view_tax_form_inherit" model="ir.ui.view">
+            <field name="name">account.tax.form.inherit</field>
+            <field name="model">account.tax</field>
+            <field name="inherit_id" ref="account.view_tax_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='analytic']" position="after">
+                    <field name="withholding_tax"/>
+                    <field name="sales_withholding_tax"/>
+                </xpath>
+            </field>
+        </record>
+        <!-- Chart of Account Form View -->
+        <record id="mjt_view_account_form_inherit" model="ir.ui.view">
+            <field name="name">account.account.form.inherit</field>
+            <field name="model">account.account</field>
+            <field name="inherit_id" ref="account.view_account_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='deprecated']" position="after">
+                    <field name="retention_money_payable"/>
+                    <field name="advance"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
