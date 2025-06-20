@@ -465,7 +465,7 @@ class AccountPaymentRegister(models.TransientModel):
                 "withholding_tax_id": [(6,0,self.withholding_tax_id.ids)],
                 "payment_type": self.payment_type,
                 "partner_type": self.partner_type,
-                "ref": self.communication,
+                "memo": self.communication,
                 "journal_id": self.journal_id.id,
                 "currency_id": self.currency_id.id,
                 "partner_id": self.partner_id.id,
