@@ -241,10 +241,10 @@ class AccountPayment(models.Model):
         else:
             self.amount_withholding = 0
 
-    @api.onchange("is_internal_transfer")
-    def _onchange_product(self):
-        if self.is_internal_transfer:
-            self.is_wht_trx = False
+    # @api.onchange("is_internal_transfer")
+    # def _onchange_product(self):
+    #     if self.is_internal_transfer:
+    #         self.is_wht_trx = False
 
     def _prepare_payment_display_name(self):
         """
@@ -347,27 +347,29 @@ class AccountPayment(models.Model):
         counterpart_balance = -liquidity_balance - write_off_balance
         currency_id = self.currency_id.id
 
-        if self.is_internal_transfer:
-            if self.payment_type == "inbound":
-                liquidity_line_name = _("Transfer to %s", self.journal_id.name)
-            else:  # payment.payment_type == 'outbound':
-                liquidity_line_name = _("Transfer from %s", self.journal_id.name)
-        else:
-            liquidity_line_name = self.payment_reference
+        # if self.is_internal_transfer:
+        #     if self.payment_type == "inbound":
+        #         liquidity_line_name = _("Transfer to %s", self.journal_id.name)
+        #     else:  # payment.payment_type == 'outbound':
+        #         liquidity_line_name = _("Transfer from %s", self.journal_id.name)
+        # else:
+        #     liquidity_line_name = self.payment_reference
+        liquidity_line_name = ''.join(x[1] for x in self._get_aml_default_display_name_list())
 
         # Compute a default label to set on the journal items.
 
         payment_display_name = self._prepare_payment_display_name()
 
-        default_line_name = self.env["account.move.line"]._get_default_line_name(
-            _("Internal Transfer")
-            if self.is_internal_transfer
-            else payment_display_name["%s-%s" % (self.payment_type, self.partner_type)],
-            self.amount,
-            self.currency_id,
-            self.date,
-            partner=self.partner_id,
-        )
+        default_line_name = ''.join(x[1] for x in self._get_aml_default_display_name_list())
+        # self.env["account.move.line"]._get_default_line_name(
+        #     _("Internal Transfer")
+        #     if self.is_internal_transfer
+        #     else payment_display_name["%s-%s" % (self.payment_type, self.partner_type)],
+        #     self.amount,
+        #     self.currency_id,
+        #     self.date,
+        #     partner=self.partner_id,
+        # )
         line_vals_list = []
         # _logger.info('llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll')
         # _logger.info(liquidity_amount_currency)
